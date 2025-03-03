@@ -103,25 +103,28 @@ func main() {
 ### Testing
 The tests need to run in a snap environment:
 
-Build and install:
+Build and install the tester snap:
 ```bash
-make build
-make install
+make build # or clean-build
+make install 
 ```
-
-The tests files are read relative to project source inside the snap.
-The `go-snapctl-tester.test` command runs `go test -v --cover` internally and accepts
-all other go test arguments.
 
 Run all tests:
-```
+```bash
 make test
 ```
 
-Run top-level tests:
+The above runs the all the tests with sudo, required to test privileged operations such as `snapctl set`.
+
+To manually run tests, use: 
 ```bash
 sudo go-snapctl-tester.test
 ```
+
+This app copies the project files to a writable data location inside the snap.
+This is to allow running tests (which required file locking) that are in the user's home via the root user.
+
+The `test` app accepts `go test` and `go vet` flags, appended to the end of the command.
 
 Run tests in one package, e.g. `log`:
 ```bash
