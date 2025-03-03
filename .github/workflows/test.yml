@@ -20,7 +20,7 @@ jobs:
 
     - name: Install the tester Snap
       run: |
-        sudo snap install --dangerous ${{ steps.snapcraft.outputs.snap }}
+        make install
 
     - name: Run Tests
       run: |
