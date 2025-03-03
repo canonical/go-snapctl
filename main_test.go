@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	snapName     = "edgex-snap-hooks"
+	snapName     = "go-snapctl-tester"
 	mockService  = snapName + ".mock-service"
 	mockService2 = snapName + ".mock-service-2"
 )

@@ -28,7 +28,7 @@ jobs:
     - name: Build and install the tester Snap
       run: |
         snapcraft
-        sudo snap install ./edgex-snap-hooks_test_amd64.snap --dangerous
+        sudo snap install ./go-snapctl-tester_test_amd64.snap --dangerous
 
     - name: Run Tests
       run: |

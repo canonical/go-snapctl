@@ -1,56 +1,103 @@
-# edgex-snap-hooks
-[![Go Reference](https://pkg.go.dev/badge/github.com/canonical/edgex-snap-hooks.svg)](https://pkg.go.dev/github.com/canonical/edgex-snap-hooks/v3)
+# go-snapctl
+[![Go Reference](https://pkg.go.dev/badge/github.com/canonical/go-snapctl.svg)](https://pkg.go.dev/github.com/canonical/go-snapctl)
 
-Snap hooks library used by [EdgeX Foundry](https://docs.edgexfoundry.org/) Go service snaps.  
-It provides utilites to implement snap hooks, including some wrappers for the [`snapctl`](https://snapcraft.io/docs/using-snapctl) commands.
+Go wrapper library for the [snapctl](https://snapcraft.io/docs/using-snapctl) tool.
 
-### Usage
-Download or upgrade to the latest version:
-```
-go get github.com/canonical/edgex-snap-hooks/v3
-```
-Please refer to [go get docs](https://pkg.go.dev/cmd/go#hdr-Add_dependencies_to_current_module_and_install_them) for details.
+Wrappers for following subcommands are partially implemented for EdgeX use cases:
 
-The [`jakarta`](https://github.com/canonical/edgex-snap-hooks/tree/jakarta) branch is split from master as of `v2.1.3`.
-It would only receive patch updates but no minor or major releases.
-The jakarta-only tags follow `v2.1.X+jakarta` scheme, where `X` is greater than 3.
+- [ ] `fde-setup-request`: Obtain full disk encryption setup request
+- [ ] `fde-setup-result`: Set result for full disk encryption
+- [x] `get`: The get command prints configuration and interface connection settings.                
+- [x] `is-connected`: Return success if the given plug or slot is connected, and failure otherwise
+- [ ] `reboot`: Control the reboot behavior of the system          
+- [x] `restart`: Restart services    
+- [x] `services`: Query the status of services      
+- [x] `set`: Changes configuration options
+- [ ] `set-health`: Report the health status of a snap
+- [x] `start`: Start services 
+- [x] `stop`: Stop services
+- [ ] `system-mode`: Get the current system mode and associated details
+- [x] `unset`: Remove configuration options
 
-#### Example
+The commands and descriptions are from `snapctl --help`.
+
+# Usage
 
 ```go
 package main
 
 import (
 	"fmt"
-	"os"
 
-	hooks "github.com/canonical/edgex-snap-hooks/v3"
+	"github.com/canonical/go-snapctl/snapctl"
 )
 
 func main() {
-	var err error
-
-	if err = hooks.Init(false, "edgex-device-example"); err != nil {
-		fmt.Printf("initialization failure: %s", err)
-		os.Exit(1)
-	}
-
-	// copy file from $SNAP to $SNAP_DATA
-	if err = hooks.CopyFile(hooks.Snap+"/config.json", hooks.SnapData+"config.json"); err != nil {
-		hooks.Error(err.Error())
-		os.Exit(1)
-	}
-  
-	// read env var override configuration
-	cli := hooks.NewSnapCtl()
-	envJSON, err := cli.Config(hooks.EnvConfig)
+	// unset
+	err := snapctl.Unset("http").Run()
 	if err != nil {
-		hooks.Error(fmt.Sprintf("Reading config 'env' failed: %v", err))
-		os.Exit(1)
+		panic(err)
 	}
-	hooks.Debug(fmt.Sprintf("envJSON: %s", envJSON))
-}
 
+	// set values
+	err = snapctl.Set("http.bind-address", "0.0.0.0").Run()
+	if err != nil {
+		panic(err)
+	}
+	err = snapctl.Set("http.bind-port", "8080").Run()
+	if err != nil {
+		panic(err)
+	}
+
+	// set values with a JSON object
+	err = snapctl.Set("http.tls",
+		`{
+			"enabled":"true",
+			"cert":"./cert.pem",
+			"privkey":"./key.pem"
+		}`).Document().Run()
+	if err != nil {
+		panic(err)
+	}
+
+	// get one value
+	value, err := snapctl.Get("http.bind-port").Run()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(value)
+	// Outputs:
+	// 8080
+
+	// get values as JSON object
+	value, err = snapctl.Get("http").Document().Run()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(value)
+	// Outputs:
+	// {
+	//   "bind-address": "0.0.0.0",
+	//   "bind-port": 8080,
+	//   "tls": {
+	//     "cert": "./cert.pem",
+	// 	   "enabled": "true",
+	// 	   "privkey": "./key.pem"
+	//   }
+	// }
+
+	// start and enable a service
+	err := snapctl.Start("snap-name.service-name").Enable().Run()
+	if err != nil {
+		panic(err)
+	}
+
+	// start all services
+	err := snapctl.Start("snap.name").Run()
+	if err != nil {
+		panic(err)
+	}
+}
 ```
 
 ### Testing
@@ -59,11 +106,11 @@ The tests need to run in a snap environment:
 Build and install:
 ```bash
 snapcraft
-sudo snap install --dangerous ./edgex-snap-hooks_test_amd64.snap
+sudo snap install --dangerous ./go-snapctl-tester_test_amd64.snap
 ```
 
 The tests files are read relative to project source inside the snap.
-The `edgex-snap-hooks.test` command runs `go test -v --cover` internally and accepts
+The `go-snapctl-tester.test` command runs `go test -v --cover` internally and accepts
 all other go test arguments.
 
 Run all tests:
@@ -73,17 +120,17 @@ make test
 
 Run top-level tests:
 ```bash
-sudo edgex-snap-hooks.test
+sudo go-snapctl-tester.test
 ```
 
 Run tests in one package, e.g. `snapctl`:
 ```bash
-sudo edgex-snap-hooks.test ./snapctl
+sudo go-snapctl-tester.test ./snapctl
 ```
 
 Run one unit test, e.g. `TestGet`:
 ```bash
-sudo edgex-snap-hooks.test ./snapctl -run TestGet
+sudo go-snapctl-tester.test ./snapctl -run TestGet
 ```
 
 #### Development
@@ -96,5 +143,5 @@ tests without rebuilding the project. E.g.:
 
 ```
 make sync
-sudo edgex-snap-hooks.test ./snapctl
+sudo go-snapctl-tester.test ./snapctl
 ```

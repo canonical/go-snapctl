@@ -1,4 +1,4 @@
-module github.com/canonical/edgex-snap-hooks/v3
+module github.com/canonical/go-snapctl
 
 require github.com/stretchr/testify v1.8.4
 

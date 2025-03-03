@@ -1,7 +1,7 @@
-name: edgex-snap-hooks
+name: go-snapctl-tester
 base: core20
 version: test
-summary: EdgeX Snap Hooks package tester
+summary: Tester for go-snapctl
 description: This snap is used to run tests on this package
 
 grade: devel

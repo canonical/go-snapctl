@@ -5,7 +5,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/canonical/edgex-snap-hooks/v3/log"
+	"github.com/canonical/go-snapctl/log"
 )
 
 func run(subcommand string, subargs ...string) (string, error) {

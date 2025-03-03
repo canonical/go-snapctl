@@ -3,7 +3,7 @@ package snapctl_test
 import (
 	"testing"
 
-	"github.com/canonical/edgex-snap-hooks/v3/snapctl"
+	"github.com/canonical/go-snapctl"
 	"github.com/stretchr/testify/require"
 )
 

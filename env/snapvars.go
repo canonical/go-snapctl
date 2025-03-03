@@ -19,7 +19,7 @@ import (
 	"errors"
 	"os"
 
-	"github.com/canonical/edgex-snap-hooks/v3/log"
+	"github.com/canonical/go-snapctl/log"
 )
 
 var (
@@ -38,16 +38,6 @@ var (
 )
 
 const (
-	// AutostartConfig is a configuration key used indicate that a
-	// service (application or device) should be autostarted on install
-	AutostartConfig = "autostart"
-	// EnvConfig is the prefix used for configure hook keys used for
-	// EdgeX configuration overrides.
-	EnvConfig = "env"
-	// ProfileConfig is a configuration key that specifies a named
-	// configuration profile
-	ProfileConfig = "profile"
-
 	snapEnv         = "SNAP"
 	snapCommonEnv   = "SNAP_COMMON"
 	snapDataEnv     = "SNAP_DATA"
