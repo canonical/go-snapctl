@@ -1,8 +1,8 @@
 name: go-snapctl-tester
-base: core20
+base: core24
 version: test
 summary: Tester for go-snapctl
-description: This snap is used to run tests on this package
+description: This snap is used to run the tests inside the snap environment.
 
 grade: devel
 confinement: strict
