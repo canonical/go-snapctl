@@ -12,16 +12,19 @@ plugs:
   test-plug:
     interface: content
     target: $SNAP_DATA
+  
+  home:
+    read: all # to access tests located in some home directory with root user
 
 apps:
   # App for running the tests
   test:
-    command: snap/local/bin/test.sh
+    command: bin/test.sh
     plugs: [network, home]
 
   # Mocked apps needed for testing
   mock-service: &ms
-    command: snap/local/bin/mock-app.sh
+    command: bin/mock-app.sh
     daemon: simple
     install-mode: disable
   mock-service-2: *ms
@@ -36,11 +39,10 @@ parts:
     # organize:
     #   '*': go/
     plugin: dump
-    source: https://go.dev/dl/go1.17.6.linux-amd64.tar.gz
+    source: https://go.dev/dl/go1.24.0.linux-amd64.tar.gz
     organize:
       "*": go/
 
-  # maintain test and binary files structure to simplify test development
-  tests:
+  bin:
     plugin: dump
-    source: .
+    source: snap/local
