@@ -124,14 +124,9 @@ sudo go-snapctl-tester.test
 This app copies the project files to a writable data location inside the snap.
 This is to allow running tests (which required file locking) that are in the user's home via the root user.
 
-The `test` app accepts `go test` and `go vet` flags, appended to the end of the command.
+The `test` app accepts arguments that are supported by both `go test` and `go vet`, appended to the end of the commands.
 
-Run tests in one package, e.g. `log`:
+For example, to run tests in one package, i.e. `log`:
 ```bash
 sudo go-snapctl-tester.test ./log
-```
-
-Run one unit test, e.g. `TestGet`:
-```bash
-sudo go-snapctl-tester.test ./log -run TestSetComponentName
 ```
