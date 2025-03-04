@@ -29,7 +29,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/canonical/go-snapctl/snapctl"
+	"github.com/canonical/go-snapctl"
 )
 
 func main() {
