@@ -8,27 +8,19 @@ on:
   # allow running manually
   workflow_dispatch:
 
-env:
-  SNAPCRAFT_BUILD_ENVIRONMENT: lxd
-
 jobs:
   test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
-    - name: Install Snapcraft
-      run: |
-        sudo snap install snapcraft --classic
-    - name: Setup LXD
-      uses: whywaita/setup-lxd@v1
-      with:
-        lxd_version: latest/stable
+    - name: Build snap
+      uses: snapcore/action-build@v1
+      id: snapcraft
 
-    - name: Build and install the tester Snap
+    - name: Install the tester Snap
       run: |
-        snapcraft
-        sudo snap install ./go-snapctl-tester_test_amd64.snap --dangerous
+        make install
 
     - name: Run Tests
       run: |

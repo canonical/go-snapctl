@@ -1,14 +1,16 @@
+build:
+	snapcraft -v
 
-try:
-	snapcraft try --use-lxd
-	snap try prime
+clean-build:
+	snapcraft clean
+	make build
 
-sync:
-	cp -r $$(ls | egrep -v '^prime') prime/
+install:
+	sudo snap install --dangerous ./go-snapctl-tester_test_amd64.snap
+	sudo snap connect go-snapctl-tester:home
 
 test:
-	sudo go-snapctl-tester.test \
-		./ \
-		./log \
-		./snapctl \
-		./env
+	sudo go-snapctl-tester.test ./...
+
+remove:
+	sudo snap remove go-snapctl-tester

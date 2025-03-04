@@ -29,7 +29,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/canonical/go-snapctl/snapctl"
+	"github.com/canonical/go-snapctl"
 )
 
 func main() {
@@ -103,45 +103,30 @@ func main() {
 ### Testing
 The tests need to run in a snap environment:
 
-Build and install:
+Build and install the tester snap:
 ```bash
-snapcraft
-sudo snap install --dangerous ./go-snapctl-tester_test_amd64.snap
+make build # or clean-build
+make install 
 ```
-
-The tests files are read relative to project source inside the snap.
-The `go-snapctl-tester.test` command runs `go test -v --cover` internally and accepts
-all other go test arguments.
 
 Run all tests:
-```
+```bash
 make test
 ```
 
-Run top-level tests:
+The above runs the all the tests with sudo, required to test privileged operations such as `snapctl set`.
+
+To manually run tests, use: 
 ```bash
 sudo go-snapctl-tester.test
 ```
 
-Run tests in one package, e.g. `snapctl`:
+This app copies the project files to a writable data location inside the snap.
+This is to allow running tests (which required file locking) that are in the user's home via the root user.
+
+The `test` app accepts arguments that are supported by both `go test` and `go vet`, appended to the end of the commands.
+
+For example, to run tests in one package, i.e. `log`:
 ```bash
-sudo go-snapctl-tester.test ./snapctl
-```
-
-Run one unit test, e.g. `TestGet`:
-```bash
-sudo go-snapctl-tester.test ./snapctl -run TestGet
-```
-
-#### Development
-```
-make try
-```
-
-You can now edit the files locally, copy them to prime directory, and re-run the
-tests without rebuilding the project. E.g.:
-
-```
-make sync
-sudo go-snapctl-tester.test ./snapctl
+sudo go-snapctl-tester.test ./log
 ```
