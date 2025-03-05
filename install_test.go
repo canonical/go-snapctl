@@ -9,7 +9,7 @@ import (
 )
 
 /*
-TestInstall runs `snapctl install` with the `--help` argument to do a smoke test of this function.
+TestInstall runs `snapctl install` to do a smoke test of this function.
 It is only possible to do a real component installation for a snap that is in the snap store.
 */
 func TestInstall(t *testing.T) {

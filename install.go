@@ -44,7 +44,7 @@ func Install(components ...string) (cmd install) {
 	return cmd
 }
 
-// Run executes the start command
+// Run executes the install command
 func (cmd install) Run() error {
 	// validate all input
 	for _, validate := range cmd.validators {
