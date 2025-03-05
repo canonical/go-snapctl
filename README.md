@@ -18,6 +18,7 @@ Wrappers for following subcommands are partially implemented for EdgeX use cases
 - [x] `stop`: Stop services
 - [ ] `system-mode`: Get the current system mode and associated details
 - [x] `unset`: Remove configuration options
+- [x] `install`: Install a snap component
 
 The commands and descriptions are from `snapctl --help`.
 
@@ -94,6 +95,12 @@ func main() {
 
 	// start all services
 	err := snapctl.Start("snap.name").Run()
+	if err != nil {
+		panic(err)
+	}
+	
+	// install a component
+	err := snapctl.Install("component-name").Run()
 	if err != nil {
 		panic(err)
 	}
