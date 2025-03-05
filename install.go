@@ -29,9 +29,9 @@ type install struct {
 // Install installs components of the snap
 // It takes an arbitrary number of component names as input
 // It returns an object for setting the CLI arguments before running the command
-func Install(component ...string) (cmd install) {
-	for _, component := range component {
-		// Handles three possible formats: <comp|snap+comp|+comp>
+func Install(components ...string) (cmd install) {
+	for _, component := range components {
+		// Handles three possible formats: <comp|snap+comp|+comp>, and rewrites them to <+comp>
 		if strings.Contains(component, "+") {
 			_, after, found := strings.Cut(component, "+")
 			if found {
