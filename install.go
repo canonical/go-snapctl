@@ -27,42 +27,20 @@ type install struct {
 }
 
 // Install installs components of the snap
-// It takes an arbitrary number of component names as input
+// It takes an arbitrary number of component names as input, and should be in the format `snap+component` or `+component`
 // It returns an object for setting the CLI arguments before running the command
 func Install(components ...string) (cmd install) {
-	for _, component := range components {
-		// Handles three possible formats: <comp|snap+comp|+comp>, and rewrites them to <+comp>
-		if strings.Contains(component, "+") {
-			_, after, found := strings.Cut(component, "+")
-			if found {
-				component = after
-			}
-		}
-		// Prefix component name with a +
-		cmd.components = append(cmd.components, "+"+component)
-	}
+	cmd.components = components
 
 	cmd.validators = append(cmd.validators, func() error {
 		for _, key := range cmd.components {
 			if strings.Contains(key, " ") {
 				return fmt.Errorf("component names must not contain spaces. Got: '%s'", key)
 			}
-			if key[0] != '+' {
-				return fmt.Errorf("component names must start with a '+' character. Got: '%s'", key)
-			}
-			if strings.Count(key, "+") != 1 {
-				return fmt.Errorf("component names must only contain one '+' character. Got: '%s'", key)
-			}
 		}
 		return nil
 	})
 
-	return cmd
-}
-
-// Help sets the --help option
-func (cmd install) Help() install {
-	cmd.options = append(cmd.options, "--help")
 	return cmd
 }
 

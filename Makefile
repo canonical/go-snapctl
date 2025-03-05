@@ -1,3 +1,7 @@
+.DEFAULT_GOAL := all
+
+all: build install test
+
 build:
 	snapcraft -v
 
@@ -14,3 +18,6 @@ test:
 
 remove:
 	sudo snap remove go-snapctl-tester
+
+clean: remove
+	snapcraft clean
