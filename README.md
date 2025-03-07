@@ -99,8 +99,8 @@ func main() {
 		panic(err)
 	}
 	
-	// install a component
-	err := snapctl.Install("component-name").Run()
+	// install components
+	err := snapctl.Install().Components("component-name", "another-component").Run()
 	if err != nil {
 		panic(err)
 	}

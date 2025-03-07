@@ -21,21 +21,25 @@ import (
 )
 
 type install struct {
+	snap       string
 	components []string
 	options    []string
-	validators []func() error
+	validators []func(install) error
 }
 
-// Install installs components of the snap
-// It takes an arbitrary number of component names as input, and should be in the format `snap+component` or `+component`
-// It returns an object for setting the CLI arguments before running the command
-func Install(components ...string) (cmd install) {
-	cmd.components = components
+// Install creates and returns an instance of the install command.
+func Install() (cmd install) {
+	cmd.validators = append(cmd.validators, func(cmd install) error {
+		if len(cmd.components) == 0 {
+			return fmt.Errorf("at least one component must be specified")
+		}
+		return nil
+	})
 
-	cmd.validators = append(cmd.validators, func() error {
-		for _, key := range cmd.components {
-			if strings.Contains(key, " ") {
-				return fmt.Errorf("component names must not contain spaces. Got: '%s'", key)
+	cmd.validators = append(cmd.validators, func(cmd install) error {
+		for _, component := range cmd.components {
+			if strings.Contains(component, " ") {
+				return fmt.Errorf("component names must not contain spaces. Got: '%s'", component)
 			}
 		}
 		return nil
@@ -44,11 +48,23 @@ func Install(components ...string) (cmd install) {
 	return cmd
 }
 
+// Snap adds the snap name that should be installed, or for which the components will be installed
+func (cmd install) Snap(snap string) install {
+	cmd.snap = snap
+	return cmd
+}
+
+// Components adds the list of components that will be installed for the current snap, or the one set by Snap()
+func (cmd install) Components(components ...string) install {
+	cmd.components = append(cmd.components, components...)
+	return cmd
+}
+
 // Run executes the install command
 func (cmd install) Run() error {
 	// validate all input
 	for _, validate := range cmd.validators {
-		if err := validate(); err != nil {
+		if err := validate(cmd); err != nil {
 			return err
 		}
 	}
@@ -58,8 +74,11 @@ func (cmd install) Run() error {
 	var args []string
 	// options
 	args = append(args, cmd.options...)
-	// components
-	args = append(args, cmd.components...)
+
+	// If a snap name is set, use it as a prefix for the components. Always prefix component names with a +.
+	for _, component := range cmd.components {
+		args = append(args, cmd.snap+"+"+component)
+	}
 
 	_, err := run("install", args...)
 	return err
