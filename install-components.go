@@ -20,7 +20,7 @@ import (
 	"strings"
 )
 
-type install struct {
+type installComponents struct {
 	components []string
 	options    []string
 	validators []func() error
@@ -29,7 +29,7 @@ type install struct {
 // InstallComponents installs components of the snap
 // It takes an arbitrary number of component names as input
 // It returns an object for setting the CLI arguments before running the command
-func InstallComponents(components ...string) (cmd install) {
+func InstallComponents(components ...string) (cmd installComponents) {
 	cmd.components = append(cmd.components, components...)
 
 	cmd.validators = append(cmd.validators, func() error {
@@ -52,7 +52,7 @@ func InstallComponents(components ...string) (cmd install) {
 }
 
 // Run executes the install command
-func (cmd install) Run() error {
+func (cmd installComponents) Run() error {
 	// validate all input
 	for _, validate := range cmd.validators {
 		if err := validate(); err != nil {
