@@ -22,7 +22,6 @@ import (
 
 type installComponents struct {
 	components []string
-	options    []string
 	validators []func() error
 }
 
@@ -63,8 +62,6 @@ func (cmd installComponents) Run() error {
 	// construct the command args
 	// install [install-OPTIONS] <snap|snap+comp|+comp>... - we only support <+comp>... for now
 	var args []string
-	// options
-	args = append(args, cmd.options...)
 
 	for _, component := range cmd.components {
 		args = append(args, "+"+component)
