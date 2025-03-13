@@ -87,6 +87,7 @@ func Fatalf(format string, a ...interface{}) {
 // It formats similar to fmt.Sprint
 func Info(a ...interface{}) {
 	slog.Info(fmt.Sprint(a...))
+	stdout(a...)
 }
 
 // Infof writes the given input to syslog (sev=LOG_INFO).
@@ -99,6 +100,7 @@ func Infof(format string, a ...interface{}) {
 // It formats similar to fmt.Sprint
 func Warn(a ...interface{}) {
 	slog.Warning(fmt.Sprint(a...))
+	stdout(a...)
 }
 
 // Warnf writes the given input to syslog (sev=LOG_WARNING).
@@ -107,11 +109,20 @@ func Warnf(format string, a ...interface{}) {
 	Warn(fmt.Sprintf(format, a...))
 }
 
+// stdout writes the given input to standard output.
+// It formats similar to fmt.Sprint, adds the global tag as prefix, and appends a newline
+func stdout(a ...interface{}) {
+	// Standard errors get collected with "snapd" as syslog app.
+	// We add the tag as prefix to distinguish these from other snapd logs.
+	fmt.Fprintf(os.Stdout, tag+": %s\n", a...)
+}
+
 // stderr writes the given input to standard error.
 // It formats similar to fmt.Sprint, adds the global tag as prefix, and appends a newline
 func stderr(a ...interface{}) {
 	// Standard errors get collected with "snapd" as syslog app.
 	// We add the tag as prefix to distinguish these from other snapd logs.
+	// TODO: check the above
 	fmt.Fprintf(os.Stderr, tag+": %s\n", a...)
 }
 
