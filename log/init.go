@@ -40,13 +40,7 @@ func initialize() {
 		loggingMode = appMode
 	}
 
-	exe, err := os.Executable()
-	if err != nil {
-		printErr("error getting the executable name:", err)
-	}
-	label := exe[strings.LastIndex(exe, "/")+1:]
-
-	globalLogger, err = setupLogger(loggingMode, label, debug)
+	globalLogger, err = setupLogger(loggingMode, "", debug)
 	if err != nil {
 		printErr(err)
 		os.Exit(1)
@@ -78,14 +72,13 @@ func setupLogger(mode, label string, debug bool) (l logger, err error) {
 	return
 }
 
-// SetLabel sets the label for log messages.
+// SetLabel adds a label to log messages.
 // The formatting depends on the used logging facility:
 //
-//	For standard streams, label is used as a "<label>: <message>"
-//	For syslog, label is used as snap.<snap-instance-name>.<label> tag
+//	For standard streams, label is added as a prefix, separated by a colon and a space.
+//	For syslog, label is added as a suffix to snap.<snap-instance-name>, separated by a dot.
 //
-// By default, label is set to the executable name.
-//
+// By default, no label is set.
 // This function is NOT thread-safe. It should not be called concurrently with
 // the other logging functions of this package.
 func SetLabel(label string) {
