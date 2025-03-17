@@ -11,14 +11,10 @@ type appLogger struct {
 }
 
 func newAppLogger(label string, debug bool) (*appLogger, error) {
-	var l appLogger
-	l.debug = debug
-
-	if label != "" {
-		l.prefix = label + ": "
-	}
-
-	return &l, nil
+	return &appLogger{
+		prefix: label + ": ",
+		debug:  debug,
+	}, nil
 }
 
 func (l *appLogger) Print(a ...any) {

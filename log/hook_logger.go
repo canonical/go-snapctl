@@ -35,12 +35,10 @@ func newHookLogger(label string, debug bool) (*hookLogger, error) {
 
 	var l hookLogger
 
-	// Set syslog tag as "snap.<snap-instance-name>[.<label>]"
-	tag := "snap." + snapInstanceName
-	if label != "" {
-		tag += "." + label
-		l.prefix = label + ": "
-	}
+	// Set syslog tag as "snap.<snap-instance-name>.<label>"
+	tag := "snap." + snapInstanceName + "." + label
+	// Set prefix for standard error as "<label>: "
+	l.prefix = label + ": "
 
 	// The logging priority set here gets overridden by logging functions
 	writer, err := syslog.New(syslog.LOG_INFO, tag)
