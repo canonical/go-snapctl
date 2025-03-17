@@ -23,6 +23,7 @@ import (
 )
 
 type hookLogger struct {
+	prefix string
 	writer *syslog.Writer
 }
 
@@ -32,10 +33,13 @@ func newHookLogger(label string, debug bool) (*hookLogger, error) {
 		return nil, fmt.Errorf("SNAP_INSTANCE_NAME environment variable not set")
 	}
 
+	var l hookLogger
+
 	// Set syslog tag as "snap.<snap-instance-name>[.<label>]"
 	tag := "snap." + snapInstanceName
 	if label != "" {
 		tag += "." + label
+		l.prefix = label + ": "
 	}
 
 	// The logging priority set here gets overridden by logging functions
@@ -43,8 +47,9 @@ func newHookLogger(label string, debug bool) (*hookLogger, error) {
 	if err != nil {
 		return nil, err
 	}
+	l.writer = writer
 
-	return &hookLogger{writer}, nil
+	return &l, nil
 }
 
 func (l *hookLogger) Print(a ...any) {
@@ -67,7 +72,7 @@ func (l *hookLogger) Error(a ...any) {
 	msg := fmt.Sprint(a...)
 	l.writer.Err(msg)
 	// print to stderr as well so that snap command prints them on non-zero exit
-	stderr(a...)
+	fmt.Fprintf(os.Stderr, l.prefix+"%s\n", a...)
 }
 
 func (l *hookLogger) Errorf(format string, a ...any) {
