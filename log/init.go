@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 var (
@@ -18,14 +19,14 @@ const (
 	// hookMode is suitable for logging from a snap hook
 	hookMode = "hook"
 
-	loggingModeKey = "GOSNAPCTL_LOG"
+	loggingModeKey = "GO_SNAPCTL_LOGGING_MODE"
 )
 
 func init() {
 	initialize()
 }
 
-// use a different function to allow testing
+// use a different function than init to allow testing
 func initialize() {
 	value, err := exec.Command("snapctl", "get", "debug").CombinedOutput()
 	if err != nil {
@@ -53,6 +54,7 @@ func printErr(a ...any) {
 }
 
 func setupLogger(mode, label string, debug bool) (l logger, err error) {
+
 	if mode == appMode {
 		l, err = newAppLogger(label, debug)
 		if err != nil {
@@ -66,6 +68,7 @@ func setupLogger(mode, label string, debug bool) (l logger, err error) {
 	} else {
 		return nil, fmt.Errorf("unknown %s:", mode)
 	}
+
 	return
 }
 
