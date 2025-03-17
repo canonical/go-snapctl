@@ -33,7 +33,11 @@ func initialize() {
 	debug = (string(bytes.TrimSpace(value)) == "true")
 
 	loggingMode = os.Getenv("LOGGING_MODE")
-	if loggingMode == "" || loggingMode == hookMode {
+	if loggingMode == "" {
+		loggingMode = hookMode
+	}
+
+	if loggingMode == hookMode {
 		globalLogger, err = newHookLogger("", debug)
 		if err != nil {
 			stderr("error creating syslog instance: %s", err)
@@ -46,7 +50,7 @@ func initialize() {
 			os.Exit(1)
 		}
 	} else {
-		stderr("unknown LOGGING_MODE: %s", loggingMode)
+		stderr("unknown LOGGING_MODE:", loggingMode)
 		os.Exit(1)
 	}
 }
