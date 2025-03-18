@@ -29,7 +29,7 @@ func Init() {
 		stderr("SNAP_INSTANCE_NAME environment variable not set.")
 		os.Exit(1)
 	}
-	tag = snapInstanceKey
+	tag = "snap." + snapInstanceKey
 
 	if err := setupSyslogWriter(tag); err != nil {
 		stderr(err)

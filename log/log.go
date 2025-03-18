@@ -24,13 +24,13 @@ import (
 
 var slog *syslog.Writer
 
-// SetComponentName adds a component name to syslog tag as "my-snap.<component>"
-// The default tag is just "my-snap", read from the snap environment.
+// SetComponentName adds a component name to syslog tag as "snap.<snap-instance-name>.<component>"
+// The default tag is just "snap.<snap-instance-name>".
 // This function is NOT thread-safe. It should not be called concurrently with
 // the other logging functions of this package.
 func SetComponentName(component string) {
 	// update global value
-	tag = snapInstanceKey + "." + component
+	tag = "snap." + snapInstanceKey + "." + component
 	Debugf("Changing syslog tag to: %s", tag)
 
 	if err := setupSyslogWriter(tag); err != nil {
