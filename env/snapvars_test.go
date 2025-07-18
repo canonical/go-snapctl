@@ -32,7 +32,7 @@ func TestEnvVars(t *testing.T) {
 	os.Setenv(snapRevEnv, "2112")
 
 	// Test
-	err := getEnvVars()
+	err := loadSnapEnv()
 
 	// Assert values
 	assert.Nil(t, err)
