@@ -13,12 +13,10 @@ var (
 )
 
 func init() {
-	if _, snap := os.LookupEnv("SNAP"); snap {
-		InitSnap()
-	}
+	Init()
 }
 
-func InitSnap() {
+func Init() {
 	value, err := exec.Command("snapctl", "get", "debug").CombinedOutput()
 	if err != nil {
 		stderr(err)

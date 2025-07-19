@@ -46,9 +46,9 @@ const (
 	snapRevEnv      = "SNAP_REVISION"
 )
 
-// loadSnapEnv populates global variables for each of the SNAP*
+// getEnvVars populates global variables for each of the SNAP*
 // variables defined in the snap's environment
-func loadSnapEnv() error {
+func getEnvVars() error {
 	Snap = os.Getenv(snapEnv)
 	if Snap == "" {
 		return errors.New("SNAP is not set")
@@ -83,10 +83,8 @@ func loadSnapEnv() error {
 }
 
 func init() {
-	if _, snap := os.LookupEnv("SNAP"); snap {
-		if err := loadSnapEnv(); err != nil {
-			log.Error(err)
-			os.Exit(1)
-		}
+	if err := getEnvVars(); err != nil {
+		log.Error(err)
+		os.Exit(1)
 	}
 }
