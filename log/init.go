@@ -1,5 +1,3 @@
-//go:build !nosnap
-
 package log
 
 import (
@@ -8,11 +6,17 @@ import (
 	"os/exec"
 )
 
+var (
+	debug           bool
+	snapInstanceKey string // used as default syslog tag and tag prefix
+	tag             string // syslog tag and stderr prefix
+)
+
 func init() {
-	initLogger()
+	Init()
 }
 
-func initLogger() {
+func Init() {
 	value, err := exec.Command("snapctl", "get", "debug").CombinedOutput()
 	if err != nil {
 		stderr(err)

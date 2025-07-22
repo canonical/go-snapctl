@@ -22,12 +22,7 @@ import (
 	"os"
 )
 
-var (
-	debug           bool   // set via snap option
-	snapInstanceKey string // used as default syslog tag and tag prefix
-	tag             string // syslog tag and stderr prefix
-	slog            *syslog.Writer
-)
+var slog *syslog.Writer
 
 // SetComponentName adds a component name to syslog tag as "snap.<snap-instance-name>.<component>"
 // The default tag is just "snap.<snap-instance-name>".

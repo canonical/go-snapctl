@@ -18,6 +18,8 @@ package env
 import (
 	"errors"
 	"os"
+
+	"github.com/canonical/go-snapctl/log"
 )
 
 var (
@@ -78,4 +80,11 @@ func getEnvVars() error {
 	}
 
 	return nil
+}
+
+func init() {
+	if err := getEnvVars(); err != nil {
+		log.Error(err)
+		os.Exit(1)
+	}
 }
