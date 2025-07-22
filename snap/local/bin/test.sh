@@ -8,6 +8,9 @@ echo "Running tests via $0"
 export PATH=$PATH:$SNAP/go/bin
 export CGO_ENABLED=0
 
+# remove existing files
+rm -fr $SNAP_COMMON/*
+
 echo "Copying project files to $SNAP_COMMON"
 cp -r ./* $SNAP_COMMON
 
@@ -20,3 +23,4 @@ echo "✅ go test"
 
 go vet "$@"
 echo "✅ go vet"
+
