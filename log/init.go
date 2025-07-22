@@ -6,17 +6,7 @@ import (
 	"os/exec"
 )
 
-var (
-	debug           bool
-	snapInstanceKey string // used as default syslog tag and tag prefix
-	tag             string // syslog tag and stderr prefix
-)
-
-func init() {
-	Init()
-}
-
-func Init() {
+func initialize() {
 	value, err := exec.Command("snapctl", "get", "debug").CombinedOutput()
 	if err != nil {
 		stderr(err)

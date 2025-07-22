@@ -33,18 +33,18 @@ func TestInitialize(t *testing.T) {
 		// set it to true and check
 		output, err := exec.Command("snapctl", "set", "debug=true").CombinedOutput()
 		assert.NoError(t, err, "Error setting config value via snapctl: %s", output)
-		Init()
+		initialize()
 		require.True(t, debug)
 
 		// unset and re-check
 		output, err = exec.Command("snapctl", "unset", "debug").CombinedOutput()
 		assert.NoError(t, err, "Error setting config value via snapctl: %s", output)
-		Init()
+		initialize()
 		require.False(t, debug)
 	})
 
 	t.Run("global instance key", func(t *testing.T) {
-		require.NotEmpty(t, snapInstanceKey)
+		require.Equal(t, "go-snapctl-tester", snapInstanceKey)
 	})
 
 	t.Run("global syslog writer", func(t *testing.T) {

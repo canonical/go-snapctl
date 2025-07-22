@@ -22,7 +22,12 @@ import (
 	"os"
 )
 
-var slog *syslog.Writer
+var (
+	debug           bool           // debug mode, set by snap option
+	snapInstanceKey string         // used as default syslog tag and tag prefix
+	tag             string         // syslog tag and stderr prefix
+	slog            *syslog.Writer // global syslog writer
+)
 
 // SetComponentName adds a component name to syslog tag as "snap.<snap-instance-name>.<component>"
 // The default tag is just "snap.<snap-instance-name>".
@@ -42,6 +47,10 @@ func SetComponentName(component string) {
 // configuration option is set to `true`.
 // It formats similar to fmt.Sprint
 func Debug(a ...interface{}) {
+	if slog == nil {
+		initialize()
+	}
+
 	if debug {
 		slog.Debug(fmt.Sprint(a...))
 	}
@@ -57,6 +66,10 @@ func Debugf(format string, a ...interface{}) {
 // Error writes the given input to syslog (sev=LOG_ERROR).
 // It formats similar to fmt.Sprint
 func Error(a ...interface{}) {
+	if slog == nil {
+		initialize()
+	}
+
 	msg := fmt.Sprint(a...)
 	slog.Err(msg)
 	// print to stderr as well so that snap command prints them on non-zero exit
@@ -86,6 +99,10 @@ func Fatalf(format string, a ...interface{}) {
 // Info writes the given input to syslog (sev=LOG_INFO).
 // It formats similar to fmt.Sprint
 func Info(a ...interface{}) {
+	if slog == nil {
+		initialize()
+	}
+
 	slog.Info(fmt.Sprint(a...))
 }
 
@@ -98,6 +115,10 @@ func Infof(format string, a ...interface{}) {
 // Warn writes the given input to syslog (sev=LOG_WARNING).
 // It formats similar to fmt.Sprint
 func Warn(a ...interface{}) {
+	if slog == nil {
+		initialize()
+	}
+
 	slog.Warning(fmt.Sprint(a...))
 }
 
