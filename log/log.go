@@ -23,10 +23,10 @@ import (
 )
 
 var (
-	debug           bool           // debug mode, set by snap option
-	snapInstanceKey string         // used as default syslog tag and tag prefix
-	tag             string         // syslog tag and stderr prefix
-	slog            *syslog.Writer // global syslog writer
+	debug            bool           // debug mode, set by snap option
+	snapInstanceName string         // used as default syslog tag and tag prefix
+	tag              string         // syslog tag and stderr prefix
+	slog             *syslog.Writer // global syslog writer
 )
 
 // SetComponentName adds a component name to syslog tag as "snap.<snap-instance-name>.<component>"
@@ -35,7 +35,7 @@ var (
 // the other logging functions of this package.
 func SetComponentName(component string) {
 	// update global value
-	tag = "snap." + snapInstanceKey + "." + component
+	tag = "snap." + snapInstanceName + "." + component
 	Debugf("Changing syslog tag to: %s", tag)
 
 	if err := setupSyslogWriter(tag); err != nil {

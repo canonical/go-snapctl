@@ -44,7 +44,7 @@ func TestInitialize(t *testing.T) {
 	})
 
 	t.Run("global instance key", func(t *testing.T) {
-		require.Equal(t, "go-snapctl-tester", snapInstanceKey)
+		require.Equal(t, "go-snapctl-tester", snapInstanceName)
 	})
 
 	t.Run("global syslog writer", func(t *testing.T) {

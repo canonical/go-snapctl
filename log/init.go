@@ -2,27 +2,37 @@ package log
 
 import (
 	"bytes"
+	"fmt"
 	"os"
 	"os/exec"
+
+	"github.com/canonical/go-snapctl/env"
 )
 
 func initialize() {
+	if err := initializeLogger(); err != nil {
+		fmt.Fprintf(os.Stderr, "Error initializing go-snapctl/log: %v\n", err)
+		fmt.Fprintln(os.Stderr, "The initialization can only be done from the snap environment.")
+		os.Exit(1)
+	}
+}
+
+func initializeLogger() error {
+	snapInstanceName = env.SnapInstanceName()
+	if snapInstanceName == "" {
+		return fmt.Errorf("SNAP_INSTANCE_NAME environment variable not set")
+	}
+	tag = "snap." + snapInstanceName
+
 	value, err := exec.Command("snapctl", "get", "debug").CombinedOutput()
 	if err != nil {
-		stderr(err)
-		os.Exit(1)
+		return fmt.Errorf("error getting value of debug snap option: %v", err)
 	}
 	debug = (string(bytes.TrimSpace(value)) == "true")
 
-	snapInstanceKey = os.Getenv("SNAP_INSTANCE_NAME")
-	if snapInstanceKey == "" {
-		stderr("SNAP_INSTANCE_NAME environment variable not set.")
-		os.Exit(1)
-	}
-	tag = "snap." + snapInstanceKey
-
 	if err := setupSyslogWriter(tag); err != nil {
-		stderr(err)
-		os.Exit(1)
+		return fmt.Errorf("error setting up syslog writer: %v", err)
 	}
+
+	return nil
 }
