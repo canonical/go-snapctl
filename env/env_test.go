@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Canonical Ltd
+ * Copyright (C) 2025 Canonical Ltd
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  *  in compliance with the License. You may obtain a copy of the License at
@@ -17,29 +17,22 @@
 package env
 
 import (
-	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestEnvVars(t *testing.T) {
-	// Arrange
-	os.Setenv(snapEnv, "/snap/testsnap/x1")
-	os.Setenv(snapCommonEnv, "/snap/testsnap/common")
-	os.Setenv(snapDataEnv, "/var/snap/testsnap/x1")
-	os.Setenv(snapInstNameEnv, "testsnap")
-	os.Setenv(snapRevEnv, "2112")
-
-	// Test
-	err := getEnvVars()
-
-	// Assert values
-	assert.Nil(t, err)
-	assert.Equal(t, Snap, "/snap/testsnap/x1")
-	assert.Equal(t, SnapCommon, "/snap/testsnap/common")
-	assert.Equal(t, snapNameEnv, "SNAP_NAME")
-	assert.Equal(t, SnapData, "/var/snap/testsnap/x1")
-	assert.Equal(t, SnapInst, "testsnap")
-	assert.Equal(t, SnapRev, "2112")
+	// SNAP
+	assert.Regexp(t, "/snap/go-snapctl-tester/x\\d+", Snap())
+	// SNAP_COMMON
+	assert.Regexp(t, "/var/snap/go-snapctl-tester/common", SnapCommon())
+	// SNAP_DATA
+	assert.Regexp(t, "/var/snap/go-snapctl-tester/x\\d+", SnapData())
+	// SNAP_INSTANCE_NAME
+	assert.Equal(t, "go-snapctl-tester", SnapInstanceName())
+	// SNAP_NAME
+	assert.Equal(t, "go-snapctl-tester", SnapName())
+	// SNAP_REVISION
+	assert.Regexp(t, "x\\d+", SnapRevision())
 }
