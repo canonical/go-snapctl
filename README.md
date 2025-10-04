@@ -3,7 +3,7 @@
 
 Go wrapper library for the [snapctl](https://snapcraft.io/docs/using-snapctl) tool.
 
-Wrappers for following subcommands are partially implemented for EdgeX use cases:
+Wrappers for the following subcommands are partially implemented:
 
 - [ ] `fde-setup-request`: Obtain full disk encryption setup request
 - [ ] `fde-setup-result`: Set result for full disk encryption
