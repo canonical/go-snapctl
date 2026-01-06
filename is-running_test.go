@@ -10,6 +10,8 @@ import (
 func TestIsRunning(t *testing.T) {
 	t.Cleanup(func() { stopAndDisableAllServices(t) })
 
+	stopAndDisableAllServices(t)
+
 	err := snapctl.Start(mockService).Run()
 	require.NoError(t, err)
 
