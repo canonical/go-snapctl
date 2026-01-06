@@ -20,7 +20,7 @@ apps:
   # App for running the tests
   test:
     command: bin/test.sh
-    plugs: [network, home]
+    plugs: [network, home, system-observe]
 
   # Mocked apps needed for testing
   mock-service: &ms
@@ -46,3 +46,5 @@ parts:
   bin:
     plugin: dump
     source: snap/local
+    stage-packages:
+      - curl
