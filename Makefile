@@ -12,6 +12,7 @@ clean-build:
 install:
 	sudo snap install --dangerous ./go-snapctl-tester_test_amd64.snap
 	sudo snap connect go-snapctl-tester:home
+	sudo snap connect go-snapctl-tester:system-observe
 
 test:
 	sudo go-snapctl-tester.test ./...

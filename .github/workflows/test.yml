@@ -12,7 +12,13 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v5
+    - name: Switch locale
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y language-pack-de
+        update-locale LANG=de_DE.UTF-8
+
+    - uses: actions/checkout@v6
 
     - name: Build snap
       uses: snapcore/action-build@v1

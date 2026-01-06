@@ -10,9 +10,9 @@ import (
 )
 
 // IsRunning returns the state of a given service.
-// serviceName should be in the format snap.<snap-name>.<app-name>.service
+// serviceName should be in the format <snap-name>.<app-name>
 func IsRunning(serviceName string) (bool, error) {
-	// Ensure the service name is in the correct format for systemd
+	// Ensure the service name is in the correct format for systemd: snap.<snap-name>.<app-name>.service
 	serviceName = "snap." + serviceName + ".service"
 
 	// 1. Explicitly connect to the System Bus (allowed by system-observe)
