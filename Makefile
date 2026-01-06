@@ -3,7 +3,7 @@
 all: build install test
 
 build:
-	snapcraft -v
+	snapcraft pack -v
 
 clean-build:
 	snapcraft clean
