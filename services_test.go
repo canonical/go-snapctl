@@ -37,8 +37,9 @@ func TestServices(t *testing.T) {
 			require.Len(t, services, 1)
 			v, found := services[mockService]
 			require.True(t, found)
-			require.True(t, v.Enabled, "Service not enabled")
-			require.True(t, v.Active, "Service not active")
+			// Startup and Current will only be these values on an English host machine
+			require.Equal(t, v.Startup, "enabled", "Service not enabled")
+			require.Equal(t, v.Current, "active", "Service not active")
 		})
 
 		t.Run("disabled and inactive", func(t *testing.T) {
@@ -47,8 +48,9 @@ func TestServices(t *testing.T) {
 			require.Len(t, services, 1)
 			v, found := services[mockService2]
 			require.True(t, found)
-			require.False(t, v.Enabled, "Service not disabled")
-			require.False(t, v.Active, "Service not inactive")
+			// Startup and Current will only be these values on an English host machine
+			require.Equal(t, v.Startup, "disabled", "Service not disabled")
+			require.Equal(t, v.Current, "inactive", "Service not inactive")
 		})
 
 		t.Run("service not found", func(t *testing.T) {

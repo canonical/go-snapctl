@@ -31,10 +31,17 @@ func getConfigStrictValue(t *testing.T, key string) string {
 	return strings.TrimSpace(string(output))
 }
 
+/*
+getServiceStatus uses snapctl to obtain the Startup and Current states of the given service.
+The response is assumed to be English, which can not be guaranteed in all environments.
+But this function is only used in tests where the environment is controlled.
+*/
 func getServiceStatus(t *testing.T, service string) (enabled, active bool) {
 	output, err := exec.Command("snapctl", "services", service).CombinedOutput()
 	require.NoError(t, err,
 		"Error getting services via snapctl: %s", output)
+
+	// Startup and Current will only be these values on an English host machine
 	enabled = strings.Contains(string(output), "enabled")
 	// look for not "inactive", because both active and inactive contain "active"
 	active = !strings.Contains(string(output), "inactive")

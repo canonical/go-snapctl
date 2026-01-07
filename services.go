@@ -22,8 +22,8 @@ type services struct {
 
 // service status object
 type service struct {
-	Enabled bool
-	Active  bool
+	Startup string
+	Current string
 	Notes   string
 }
 
@@ -102,8 +102,8 @@ func (cmd services) parseOutput(output string) (map[string]service, error) {
 		}
 
 		services[serviceName] = service{
-			Enabled: startup == "enabled",
-			Active:  current == "active",
+			Startup: startup,
+			Current: current,
 			Notes:   notes,
 		}
 	}
