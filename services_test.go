@@ -38,8 +38,8 @@ func TestServices(t *testing.T) {
 			v, found := services[mockService]
 			require.True(t, found)
 			// Startup and Current will only be these values on an English host machine
-			require.Equal(t, v.Startup, "enabled", "Service not enabled")
-			require.Equal(t, v.Current, "active", "Service not active")
+			require.Equal(t, "enabled", v.Startup, "Service not enabled")
+			require.Equal(t, "active", v.Current, "Service not active")
 		})
 
 		t.Run("disabled and inactive", func(t *testing.T) {
@@ -49,8 +49,8 @@ func TestServices(t *testing.T) {
 			v, found := services[mockService2]
 			require.True(t, found)
 			// Startup and Current will only be these values on an English host machine
-			require.Equal(t, v.Startup, "disabled", "Service not disabled")
-			require.Equal(t, v.Current, "inactive", "Service not inactive")
+			require.Equal(t, "disabled", v.Startup, "Service not disabled")
+			require.Equal(t, "inactive", v.Current, "Service not inactive")
 		})
 
 		t.Run("service not found", func(t *testing.T) {
