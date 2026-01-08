@@ -12,6 +12,10 @@ func TestStart(t *testing.T) {
 	stopAndDisableAllServices(t)
 
 	t.Run("snapctl start", func(t *testing.T) {
+		if !isEnglishLocale() {
+			t.Skip("Skipping test: requires host locale to be English")
+		}
+
 		t.Run("one", func(t *testing.T) {
 			t.Cleanup(func() { stopAndDisableAllServices(t) })
 
@@ -34,6 +38,10 @@ func TestStart(t *testing.T) {
 	})
 
 	t.Run("snapctl start --enable", func(t *testing.T) {
+		if !isEnglishLocale() {
+			t.Skip("Skipping test: requires host locale to be English")
+		}
+
 		t.Cleanup(func() { stopAndDisableAllServices(t) })
 
 		err := snapctl.Start(mockService).Enable().Run()

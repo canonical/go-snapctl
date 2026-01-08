@@ -12,6 +12,10 @@ func TestRestart(t *testing.T) {
 	stopAndDisableAllServices(t)
 
 	t.Run("snapctl restart", func(t *testing.T) {
+		if !isEnglishLocale() {
+			t.Skip("Skipping test: requires host locale to be English")
+		}
+
 		t.Run("one", func(t *testing.T) {
 			t.Cleanup(func() { stopAndDisableAllServices(t) })
 
