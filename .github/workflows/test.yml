@@ -12,16 +12,24 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v5
+      # Set locale to German to verify this library works in non-English environments
+      - name: Switch locale
+        run: |
+          set -x
+          sudo apt-get update
+          sudo apt-get install -y language-pack-de
+          sudo update-locale LANG=de_DE.UTF-8
 
-    - name: Build snap
-      uses: snapcore/action-build@v1
-      id: snapcraft
+      - uses: actions/checkout@v6
 
-    - name: Install the tester Snap
-      run: |
-        make install
+      - name: Build snap
+        uses: snapcore/action-build@v1
+        id: snapcraft
 
-    - name: Run Tests
-      run: |
-        make test
+      - name: Install the tester Snap
+        run: |
+          make install
+
+      - name: Run Tests
+        run: |
+          make test
