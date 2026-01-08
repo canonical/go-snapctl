@@ -4,10 +4,12 @@ package snapctl_test
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
 	"strings"
 	"testing"
 
+	"github.com/canonical/go-snapctl"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -31,13 +33,31 @@ func getConfigStrictValue(t *testing.T, key string) string {
 	return strings.TrimSpace(string(output))
 }
 
+/*
+getServiceStatus uses snapctl to obtain the Startup and Current states of the given service.
+The response is assumed to be English, which can not be guaranteed in all environments.
+But this function is only used in tests where the environment is controlled.
+*/
 func getServiceStatus(t *testing.T, service string) (enabled, active bool) {
-	output, err := exec.Command("snapctl", "services", service).CombinedOutput()
-	require.NoError(t, err,
-		"Error getting services via snapctl: %s", output)
-	enabled = strings.Contains(string(output), "enabled")
-	// look for not "inactive", because both active and inactive contain "active"
-	active = !strings.Contains(string(output), "inactive")
+	services, err := snapctl.Services(service).Run()
+	require.NoError(t, err, "Error getting services: %v", err)
+
+	serviceStatus, found := services[service]
+	require.True(t, found, "Service %s not found", service)
+
+	// validate the Startup value
+	if serviceStatus.Startup != "enabled" && serviceStatus.Startup != "disabled" {
+		t.Fatalf("unexpected snapctl output: expected Startup as enabled|disabled, got: %s", serviceStatus.Startup)
+	}
+
+	// validate the Current value
+	if serviceStatus.Current != "active" && serviceStatus.Current != "inactive" {
+		t.Fatalf("unexpected snapctl output: expected Current as active|inactive, got: %s", serviceStatus.Current)
+	}
+
+	// Startup and Current will only be these values on an English host machine
+	enabled = serviceStatus.Startup == "enabled"
+	active = serviceStatus.Current == "active"
 	return enabled, active
 }
 
@@ -65,4 +85,20 @@ func stopAndDisableService(t *testing.T, service string) {
 
 func stopAndDisableAllServices(t *testing.T) {
 	stopAndDisableService(t, snapName)
+}
+
+// isEnglishLocale checks if the system's locale is likely English
+// TODO remove this function and related checks when snapctl supports locale-independent output
+// See bug https://bugs.launchpad.net/snapd/+bug/2137543
+func isEnglishLocale() bool {
+	// Common environment variables for locale on Unix/Linux/macOS
+	lang := os.Getenv("LANG")
+	lcAll := os.Getenv("LC_ALL")
+
+	// Check if any of these indicate an English locale (e.g., "en_US", "en-GB", "en")
+	if strings.HasPrefix(strings.ToLower(lang), "en") || strings.HasPrefix(strings.ToLower(lcAll), "en") {
+		return true
+	}
+
+	return false
 }

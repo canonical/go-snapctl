@@ -22,8 +22,8 @@ type services struct {
 
 // service status object
 type service struct {
-	Enabled bool
-	Active  bool
+	Startup string
+	Current string
 	Notes   string
 }
 
@@ -91,19 +91,9 @@ func (cmd services) parseOutput(output string) (map[string]service, error) {
 		current := cells[2]
 		notes := cells[3]
 
-		// validate the Startup value
-		if startup != "enabled" && startup != "disabled" {
-			return nil, fmt.Errorf("unexpected snapctl output: expected Startup as enabled|disabled, got: %s", startup)
-		}
-
-		// validate the Current value
-		if current != "active" && current != "inactive" {
-			return nil, fmt.Errorf("unexpected snapctl output: expected Current as active|inactive, got: %s", startup)
-		}
-
 		services[serviceName] = service{
-			Enabled: startup == "enabled",
-			Active:  current == "active",
+			Startup: startup,
+			Current: current,
 			Notes:   notes,
 		}
 	}
