@@ -19,6 +19,7 @@ Wrappers for the following subcommands are partially implemented:
 - [ ] `system-mode`: Get the current system mode and associated details
 - [x] `unset`: Remove configuration options
 - [x] `install`: Install a snap component
+- [x] `remove`: Remove a snap component
 
 The commands and descriptions are from `snapctl --help`.
 
