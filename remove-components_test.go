@@ -8,8 +8,8 @@ import (
 )
 
 /*
-TestInstall runs `snapctl install` to do a smoke test of this function.
-It is only possible to do a real component installation for a snap that is in the snap store.
+TestRemove smoke tests the component removal.
+It is only possible to do a real component removal for a snap that is in the snap store.
 */
 func TestRemove(t *testing.T) {
 	t.Run("snapctl remove +valid-name", func(t *testing.T) {
