@@ -27,6 +27,7 @@ const (
 	snapInstNameEnv = "SNAP_INSTANCE_NAME"
 	snapNameEnv     = "SNAP_NAME"
 	snapRevEnv      = "SNAP_REVISION"
+	snapVersionEnv  = "SNAP_VERSION"
 )
 
 // Getter functions for SNAP environment variables.
@@ -53,4 +54,8 @@ func SnapName() string {
 
 func SnapRevision() string {
 	return os.Getenv(snapRevEnv)
+}
+
+func SnapVersion() string {
+	return os.Getenv(snapVersionEnv)
 }

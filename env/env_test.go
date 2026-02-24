@@ -35,4 +35,6 @@ func TestEnvVars(t *testing.T) {
 	assert.Equal(t, "go-snapctl-tester", SnapName())
 	// SNAP_REVISION
 	assert.Regexp(t, "x\\d+", SnapRevision())
+	// SNAP_VERSION
+	assert.Equal(t, "test", SnapVersion())
 }
